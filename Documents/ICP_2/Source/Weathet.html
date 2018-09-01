@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <style type="text/css">
+        .center {
+            margin: auto;
+            width: 40%;
+            padding: 10px;
+        }
+        html{
+            color: whitesmoke;
+        }
+        table tr td
+        {
+            text-align: center;
+        }
+    </style>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+    <script>
+         var app = angular.module('App', []);
+         app.controller('Control',function ($scope,$http) {
+
+$scope.getWeather=function(){
+
+    if(($scope.txtState==null || $scope.txtState=="")&&($scope.txtState==null || $scope.txtState==""))
+    {
+        alert('Enter State and City');
+        return;
+    }
+    if($scope.txtState==null || $scope.txtState=="")
+    {
+        alert('Enter State');
+        return;
+    }
+    if($scope.txtCity==null || $scope.txtCity=="")
+    {
+        alert('Enter City');
+        return;
+    }
+
+    var query = 'https://api.wunderground.com/api/36b799dc821d5836/hourly/q/' + $scope.txtState + '/' + $scope.txtCity + '.json';
+    $http.get(query).then(function(data)
+    {
+        console.log(data)
+        if(data.data.hourly_forecast ==null)
+        {
+            alert('Enter valid state and city names!');
+            return;
+        }
+        document.getElementById('tblWeather').style.display="block";
+        $scope.names = data.data.hourly_forecast;
+        $scope.myImage=data.data.hourly_forecast.icon_url;
+    })
+        .catch(function(response) {
+            console.error('Gists error', response.status, response.data);
+        });
+}
+         });
+    </script>
+</head>
+<body style="background-color: #55B4B0;">
+<div style="height: 100px;background-color: whitesmoke">
+    <img src="weathericons_partly-cloudy-day.png" style="height: 112px;margin-left: 25px">
+    <p style="margin-left: 174px;margin-top: -89px;color: #55B4B0;font-size: 50px;font-weight:  600;font-family: forte;">Weather Info </p>
+</div>
+<div class="center" style="margin-top: 50px" ng-app="App" ng-controller="Control">
+    <p style="color: whitesmoke">Enter State and City to get weather update for next 5 hours.</p>
+    <table class="table" cellspacing="10" cellpadding="10">
+        <tr>
+            <td>State </td>
+            <td><input type="text" ng-model="txtState" ></td>
+        </tr>
+        <tr>
+            <td>City </td>
+            <td><input type="text" ng-model="txtCity" ></td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                <button style="color:  whitesmoke;background-color: #55B4B0;" type="submit" ng-click="getWeather()"> Get Weather</button></td>
+        </tr>
+    </table>
+    <div id="tblWeather" style="display: none">
+    <table class="table table-striped" cellpadding="5px" style="font-size: 14px">
+        <tr>
+            <th>Date</th>
+            <th>Time</th>
+            <th>Temperature</th>
+            <th>Condition</th>
+        </tr>
+        <tr ng-repeat="x in names | limitTo: 5">
+            <td>{{x.FCTTIME.mon_padded+'/'+x.FCTTIME.mday_padded+'/'+x.FCTTIME.year}}</td>
+            <td>{{x.FCTTIME.civil}}</td>
+            <td>{{x.feelslike.english}}&#x2109;</td>
+            <td>{{ x.condition }}<img style="height: 25px" ng-src="{{x.icon_url}}"></td>
+        </tr>
+    </table>
+    </div>
+
+</div>
+</body>
+</html>
