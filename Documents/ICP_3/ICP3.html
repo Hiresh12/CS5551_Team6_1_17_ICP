@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+    <style type="text/css">
+        table tr td
+        {
+            text-align: left;
+        }
+    </style>
+    <script>
+        angular.module('MyApp', [])
+        .controller('MyCtrl', function($scope,$http) {
+            $scope.getDetails = function () {
+                if($scope.txtFood==null|| $scope.txtFood=="")
+                {
+                    var audio='Please Enter text to search';
+                    document.getElementById('details').style.display="none";
+                }
+                else {
+                    var URL = 'https://api.nutritionix.com/v1_1/search/' + $scope.txtFood + '?results=0:1&fields=*&appId=97cd7ec7&appKey=2ed86de1804953f19c8eb6f3c369fd2e'
+                    $http
+                        .get(URL)
+                        .then(function (response) {
+                            console.log(URL);
+                            console.log(URL);
+                            console.log(response)
+                            $scope.calories = response.data.hits[0].fields.nf_calories;
+                            $scope.sWeight = response.data.hits[0].fields.nf_serving_weight_grams + ' grams';
+
+                        });
+                    var audio=$scope.txtFood
+                    document.getElementById('details').style.display="block";
+                }
+                var URL1 = 'https://stream.watsonplatform.net/text-to-speech/api/v1/synthesize?username=f773ae6b-a10f-4b58-a8b1-14ceef159520&password=lvJ6fMmzGY3Q&text='+audio
+                var audio=new Audio(URL1);
+                audio.play();
+            }
+        });
+    </script>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body class="bg-info text-success">
+<div class="container text-center" ng-app="MyApp" ng-controller="MyCtrl">
+    <div class="page-header">
+        <h1>Nutritionix and IBM Watson text to speech</h1>
+    </div>
+    <div class="container text-center">
+    <table align="center" style="width: 30%" class="table-borderless">
+    <tr>
+         <td>
+             <input type="text" ng-model="txtFood">
+        </td>
+        <td>
+            <button type="submit" ng-click="getDetails()">Get Details</button><div class="clearfix hidden-xs hidden-sm"> </div>
+        </td>
+    </tr>
+    </table>
+    </div>
+    <div id="details" style="display: none;margin-top: 3%">
+        <table style="width: 20%" cellpadding="10px" cellspacing="10px" align="center" class="table-borderless">
+            <tr>
+   <td> Calories  </td><td><label ng-bind="calories"></label></td></tr>
+            <tr>
+                <td>
+    Serving Weight  </td><td><label ng-bind="sWeight"></label></td></tr>
+        </table>
+    </div>
+</div>
+</body>
+</html>
