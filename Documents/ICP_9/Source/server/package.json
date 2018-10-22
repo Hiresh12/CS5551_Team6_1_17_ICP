@@ -1,0 +1,16 @@
+{
+  "name": "icp9",
+  "version": "1.0.0",
+  "description": "icp",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "author": "hiresh",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.4",
+    "ejs": "^2.6.1",
+    "express": "^4.16.4"
+  }
+}
