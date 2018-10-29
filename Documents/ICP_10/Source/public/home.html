@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>ICP 8</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+
+<style type="text/css">
+    .borderless td, .borderless th {
+        border: none !important;
+        padding: 4px !important;
+    }
+    .borderless1 td, .borderless1 th {
+        border: none !important;
+    }
+    body
+    {
+        color: whitesmoke;
+    }
+</style>
+<h1 align="center">Google Cloud Natural Language API - Text Analysis</h1>
+<script>
+    var app = angular.module('application', []);
+    app.controller('controller', function($scope,$http) {
+        $scope.textAnalyze = function(){
+            var query='/Hiresh/nlp?Text='+$scope.text
+            $http.post(query).then(function(data) {
+                console.log(data);
+                $scope.Results = data.data.tokens;
+                $scope.lblLang=data.data.language=="en"?"English":"French";
+            });
+        }
+    });
+</script>
+</head>
+<body style="background-color: midnightblue">
+<div ng-app="application" ng-controller="controller">
+    <div class="container col-xs-12">
+<table class="table borderless1" style="border: 0px"><tr>
+    <td class="col-xs-3">
+    Enter the sentence to be analyzed: </td>
+    <td class="col-xs-6"><input class="col-xs-12" style="color: midnightblue" type="text" ng-model="text"></td>
+    <td class="col-xs-3">
+    <button style="color: midnightblue" id="submit" ng-click="textAnalyze()"> Analyze</button></td>
+</tr>
+</table>
+    </div>
+    <div class="container">
+        <div>
+            <label style="color: whitesmoke">Language : </label>
+            <label ng-bind="lblLang" style="color: goldenrod"></label>
+        </div>
+    <table class="table">
+        <tr>
+            <th>Content</th>
+            <th>Parts of Speech</th>
+            <th>Gender</th>
+            <th>Grammatical Number</th>
+        </tr>
+        <tr ng-repeat="data in Results">
+            <td>{{data.text.content}}</td>
+            <td>{{data.partOfSpeech.tag}}</td>
+            <td>{{data.partOfSpeech.gender}}</td>
+            <td>{{data.partOfSpeech.number}}</td>
+        </tr>
+    </table>
+    </div>
+    <br>
+</div>
+</body>
+</html>
